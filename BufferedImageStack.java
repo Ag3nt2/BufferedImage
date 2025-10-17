@@ -1,100 +1,70 @@
-import java.awt.image.BufferedImage;
+/*
+ *Catherine Lin 
+ *7th 
+ */
 
-//West Walton
+import java.awt.image.BufferedImage;
+import java.util.EmptyStackException;
+
 public class BufferedImageStack {
-	public static BufferedImage[] bi = new BufferedImage[2];
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		//push("bonk");
-		//System.out.println(getArraySize());
-		//push("bonk");
-		//push("bonk");
-		//push("bonk");
-		//System.out.println(getArraySize());
-		//System.out.println(bi[3]);
-		//pop();
-		//pop();
-		//pop();
-		//System.out.println(bi[0]);
-		//pop();
-		//System.out.println(isEmpty());
-		//push("bonk");
-		//System.out.println(isEmpty());
-		//System.out.println(getSize());
-		//push("bonk");
-		//push("bonk");
-		//push("bonk");
-		//push("bonk");
-		//System.out.println(getSize());
-		//System.out.println(getArraySize());
-	}
-	
-	public static void push(BufferedImage b)
-	{
-		if(bi[bi.length - 1] != null)
-		{
-			BufferedImage[] bi2  = new BufferedImage[bi.length * 2];
-			for(int i =  0 ; i < bi.length; i++)
-			{
-				bi2[i] = bi[i];
-			}
-			bi2[bi.length] = b;
-			bi = bi2;
-		}
-		else
-		{
-			int count = 0;
-			while(bi[count] != null)
-			{
-				count++;
-			}
-			bi[count] = b;
-		}
-	}
-	public static BufferedImage pop()
-	{
-		int count = 0;
-		while(count < bi.length && bi[count] != null )
-		{
-			count++;
-		}
-		if(count == bi.length && bi[count - 1] == null )
-		{
-			throw new IllegalArgumentException("List is empty");
-		}
-		else
-		{
-			BufferedImage b = bi[count - 1];
-			bi[count - 1] = null;
-			return b;
-		}
-	}
-	public  static boolean isEmpty()
-	{
-		if(bi[0] == null)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	public static BufferedImage get(int i)
-	{
-		return bi[i];
-	}
-	public  static int getSize()
-	{
-		int count = 0;
-		while(bi[count] != null)
-		{
-			count++;
-		}
-		return count;
-	}
-	public static int getArraySize()
-	{
-		return bi.length;
-	}
+
+    private BufferedImage[] items; // the array holding images
+    private int size;              // how many images are in the stack now
+
+    // Start with capacity 2, as required.
+    public BufferedImageStack() {
+        items = new BufferedImage[2];
+        size = 0;
+    }
+
+    // If the array is full make a new array of double size and copy over.
+    public void push(BufferedImage img) {
+        if (img == null) return; // keep it simple and ignore nulls
+        if (size == items.length) {
+            // double the capacity
+            BufferedImage[] bigger = new BufferedImage[items.length * 2];
+            for (int i = 0; i < items.length; i++) {
+                bigger[i] = items[i];
+            }
+            items = bigger;
+        }
+        items[size] = img;
+        size++;
+    }
+
+    // pop: remove and return the image at the top.
+    // Throw EmptyStackException if there is nothing to pop.
+    public BufferedImage pop() {
+        if (isEmpty()) {
+            throw new EmptyStackException();
+        }
+        size--;
+        BufferedImage top = items[size];
+        items[size] = null; 
+        return top;
+    }
+
+    // isEmpty returns true if no items in the stack.
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    // get: return the image at a specific index.
+    // Throw IndexOutOfBoundsException for bad indexes.
+    public BufferedImage get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("index: " + index);
+        }
+        return items[index];
+    }
+
+    // getSize: how many images are currently stored.
+    public int getSize() {
+        return size;
+    }
+
+    // getArraySize: current capacity of the internal array.
+    public int getArraySize() {
+        return items.length;
+    }
 }
