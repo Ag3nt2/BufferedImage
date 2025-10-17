@@ -47,7 +47,8 @@ public class ImageEnhancer extends Component implements ActionListener {
 
     //  Students: Here, you should declare two variables to hold instances
     	//of your stack class, with one for Undo and one for Redo.
-    
+    BufferedImageStack undoStack = new BufferedImageStack();
+    BufferedImageStack redoStack = new BufferedImageStack();
 
     // A 3x3 filtering kernel for high-pass filtering:
     public static final float[] highPass = {
@@ -152,7 +153,8 @@ public class ImageEnhancer extends Component implements ActionListener {
         
         //  Students: Add code to create empty stack instances for the Undo stack 
         	//and the Redo stack, and put your code for this here:
-        
+        BufferedImageStack undoStack = new BufferedImageStack();
+        BufferedImageStack redoStack = new BufferedImageStack();
     }
 
     public Dimension getPreferredSize() {
@@ -183,11 +185,36 @@ public class ImageEnhancer extends Component implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         //  Students: Add code in this method to save the current buffered image for
         	//undoing and dispose of any redoable actions.
-        
+        if(e.getSource() != undoItem && e.getSource() != redoItem)
+        {
+        	undoStack.push(copyImage(biWorking));
+        	redoStack.clear();
+        	undoItem.setEnabled(true);
+        	redoItem.setEnabled(false);
+        }
+        if(e.getSource() == undoItem)
+        {
+        	redoItem.setEnabled(true);
+        	redoStack.push(copyImage(biWorking));
+        	biWorking = undoStack.pop();
+        	if(undoStack.isEmpty() == true)
+        	{
+        		undoItem.setEnabled(false);
+        	}
+        }
+	    if(e.getSource() == redoItem)
+	    {
+	    	undoItem.setEnabled(true);
+	    	undoStack.push(copyImage(biWorking));
+	    	biWorking = redoStack.pop();
+	    	if(redoStack.isEmpty() == true)
+        	{
+        		redoItem.setEnabled(false);
+        	}
+	    }
         //  Also add code to enable and disable the Undo and Redo menu items, and to process
         //  these items when the user selects them.
-
-     //System.out.println("The actionEvent is "+e); // This can be useful when debugging.
+     System.out.println("The actionEvent is "+e); // This can be useful when debugging.
      if (e.getSource()==exitItem) { System.exit(0); }
      if (e.getSource()==blurItem) { blur(); }
      if (e.getSource()==sharpenItem) { sharpen(); }
@@ -197,8 +224,10 @@ public class ImageEnhancer extends Component implements ActionListener {
         gWorking.drawImage(biFiltered, 0, 0, null); // Draw the pixels from biFiltered into biWorking.
         repaint(); // Ask Swing to update the screen.
         printNumbersOfElementsInBothStacks(); // Report on the states of the stacks.
-        return;      
+        return;     
+        
     }
+    
 
     private ImageEnhancer image_enhancer_instance;
     public ImageEnhancer getImageEnhancer() { // For use by the autograder
@@ -215,8 +244,9 @@ public class ImageEnhancer extends Component implements ActionListener {
      new ImageEnhancer().run(); // Called from below, and by the autograder.
     }
     
-    public void run() {
-        JFrame f = new JFrame("ImageEnhancer WITH Undo or Redo by West Walton"); // Students should update this.
+    public void run()
+    {
+        JFrame f = new JFrame("ImageEnhancer WITH Undo or Redo by West Walton and Catherine Lin"); // Students should update this.
         f.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {System.exit(0);}
         });
@@ -231,13 +261,14 @@ public class ImageEnhancer extends Component implements ActionListener {
      //  Students: Uncomment this code that prints out the numbers of elements
      	// in each of the two stacks (Undo and Redo):
         
-        //System.out.println("The Undo stack contains " + undoStack.getSize() + " elements.");
-        //System.out.println("The Redo stack contains " + redoStack.getSize() + " elements.");
+        System.out.println("The Undo stack contains " + undoStack.getSize() + " elements.");
+        System.out.println("The Redo stack contains " + redoStack.getSize() + " elements.");
     }
     
     //To make sure we are actually assigning the values of our BufferedImages instead of
     	//the memory locations, use this method to create a clean copy of you BufferedImages.
-    public static BufferedImage copyImage(BufferedImage source){
+    public static BufferedImage copyImage(BufferedImage source)
+    {
 	    BufferedImage b = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
 	    Graphics g = b.getGraphics();
 	    g.drawImage(source, 0, 0, null);

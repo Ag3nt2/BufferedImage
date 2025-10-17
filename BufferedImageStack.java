@@ -1,70 +1,89 @@
-/*
- *Catherine Lin 
- *7th 
- */
-
 import java.awt.image.BufferedImage;
-import java.util.EmptyStackException;
 
+//West Walton
 public class BufferedImageStack {
-
-    private BufferedImage[] items; // the array holding images
-    private int size;              // how many images are in the stack now
-
-    // Start with capacity 2, as required.
-    public BufferedImageStack() {
-        items = new BufferedImage[2];
-        size = 0;
-    }
-
-    // If the array is full make a new array of double size and copy over.
-    public void push(BufferedImage img) {
-        if (img == null) return; // keep it simple and ignore nulls
-        if (size == items.length) {
-            // double the capacity
-            BufferedImage[] bigger = new BufferedImage[items.length * 2];
-            for (int i = 0; i < items.length; i++) {
-                bigger[i] = items[i];
-            }
-            items = bigger;
-        }
-        items[size] = img;
-        size++;
-    }
-
-    // pop: remove and return the image at the top.
-    // Throw EmptyStackException if there is nothing to pop.
-    public BufferedImage pop() {
-        if (isEmpty()) {
-            throw new EmptyStackException();
-        }
-        size--;
-        BufferedImage top = items[size];
-        items[size] = null; 
-        return top;
-    }
-
-    // isEmpty returns true if no items in the stack.
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    // get: return the image at a specific index.
-    // Throw IndexOutOfBoundsException for bad indexes.
-    public BufferedImage get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("index: " + index);
-        }
-        return items[index];
-    }
-
-    // getSize: how many images are currently stored.
-    public int getSize() {
-        return size;
-    }
-
-    // getArraySize: current capacity of the internal array.
-    public int getArraySize() {
-        return items.length;
-    }
+	public BufferedImage[] bi = new BufferedImage[2]; //starter array
+	public int count = 0;  //count
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		//push("bonk");
+		//System.out.println(getArraySize());
+		//push("bonk");
+		//push("bonk");
+		//push("bonk");
+		//System.out.println(getArraySize());
+		//System.out.println(bi[3]);
+		//pop();
+		//pop();
+		//pop();
+		//System.out.println(bi[0]);
+		//pop();
+		//System.out.println(isEmpty());
+		//push("bonk");
+		//System.out.println(isEmpty());
+		//System.out.println(getSize());
+		//push("bonk");
+		//push("bonk");
+		//push("bonk");
+		//push("bonk");
+		//System.out.println(getSize());
+		//System.out.println(getArraySize());
+	}
+	
+	public void push(BufferedImage b) //adds new item to array and doubles array size if the array is too small
+	{
+		count++;
+		if(count == bi.length)
+		{
+			BufferedImage[] bi2  = new BufferedImage[bi.length * 2];
+			for(int i =  0 ; i < bi.length; i++)
+			{
+				bi2[i] = bi[i];
+			}
+			bi2[bi.length] = b;
+			bi = bi2;
+		}
+		else
+		{
+			bi[count] = b;
+		}
+	}
+	public  BufferedImage pop() //gets rid of last item  of the  array
+	{
+		BufferedImage b = bi[count];
+		bi[count] = null;
+		count--;
+		return b;
+	}
+	public   boolean isEmpty() //returns if the array is  empty or not
+	{
+		if(count == 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	public  BufferedImage get(int i) //peeks at the item  at  the top  of  the array
+	{
+		return bi[i];
+	}
+	public   int getSize() //returns location of last  item  of array
+	{
+		return count;
+	}
+	public  int getArraySize() //return actual size of array
+	{
+		return bi.length;
+	}
+	public  void clear() //clears array,  made this  cause i felt like it
+	{
+		for(int i = 0; i < bi.length; i++)
+		{
+			bi[i] = null;
+		}
+		count = 0;
+	}
 }
